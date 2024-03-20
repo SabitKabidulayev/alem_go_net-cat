@@ -3,6 +3,7 @@ package functions
 import (
 	"fmt"
 	"net"
+	"time"
 )
 
 func RunServer(port string) error {
@@ -39,5 +40,27 @@ func RunServer(port string) error {
 }
 
 func (room *Server) Broadcast(ch <-chan Message) {
+	for {
+		msg := <-ch
+		timestamp := time.Now().Format("2006-01-02 15:04:05")
+		text := ""
 
+		room.mutex.Lock()
+		if msg.time {
+			text = "[" + timestamp + "][" + room.clients[msg.from] + "]:"
+		}
+
+		text += msg.message
+		room.history = append(room.history, text)
+
+		for conn := range room.clients {
+			if conn != msg.from {
+				conn.Write([]byte("\n" + text + "\n"))
+
+				conn.Write([]byte("[" + timestamp + "]"))
+				conn.Write([]byte("[" + room.clients[conn] + "]:"))
+			}
+		}
+		room.mutex.Unlock()
+	}
 }

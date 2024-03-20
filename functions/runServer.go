@@ -35,7 +35,7 @@ func RunServer(port string) error {
 		}
 		room.mutex.Unlock()
 
-		go HandleConnection()
+		go HandleConnection(room, conn, ch)
 	}
 }
 

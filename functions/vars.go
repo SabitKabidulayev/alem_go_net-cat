@@ -31,8 +31,9 @@ _)      \.___.,|     .'
 \____   )MMMMMP|   .'
      '-'       '--'
 `
-	EnterNameMsg  = "[Enter your name]: "
-	TCPChatMsg    = "TCPChat server is listening on port"
-	JoinChatMsg   = "You have joined the chat\n"
-	FullServerMsg = "Sorry, the chat is full (10/10 connections)\n\n*Press enter to quit and Try to connect later*\n"
+	EnterNameMsg     = "[Enter your name]: "
+	TCPChatMsg       = "TCPChat server is listening on port"
+	JoinChatMsg      = "You have joined the chat\n"
+	NonValidInputMsg = "Non-Valid input. Please, try again\n"
+	FullServerMsg    = "Sorry, the chat is full (10/10 connections)\n\n*Press enter to quit and Try to connect later*\n"
 )

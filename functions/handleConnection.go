@@ -1,6 +1,10 @@
 package functions
 
-import "net"
+import (
+	"bufio"
+	"errors"
+	"net"
+)
 
 func HandleConnection(room *Server, conn net.Conn, ch chan<- Message) {
 	conn.Write([]byte(WelcomeMsg))
@@ -34,7 +38,14 @@ func HandleConnection(room *Server, conn net.Conn, ch chan<- Message) {
 }
 
 func ReadLine(conn net.Conn) (string, error) {
-	return "msg", nil
+	msg, _, err := bufio.NewReader(conn).ReadLine()
+	if err != nil {
+		return "", errors.New("403")
+	}
+	if IsKeys(msg) {
+		return "", errors.New(NonValidInputMsg)
+	}
+	return string(msg), nil
 }
 
 func (room *Server) ValidName(name string) error {
@@ -55,4 +66,17 @@ func (room *Server) informNewConnection(conn net.Conn, ch chan<- Message) {
 
 func (room *Server) uploadHistory(conn net.Conn) {
 
+}
+
+func IsKeys(bytes []byte) bool {
+	for i := 0; i < len(bytes); i++ {
+		switch bytes[i] {
+		case 0:
+			return true
+		case 27:
+			return true
+		}
+	}
+
+	return false
 }

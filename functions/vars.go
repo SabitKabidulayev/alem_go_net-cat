@@ -34,6 +34,9 @@ _)      \.___.,|     .'
 	EnterNameMsg     = "[Enter your name]: "
 	TCPChatMsg       = "TCPChat server is listening on port"
 	JoinChatMsg      = "You have joined the chat\n"
+	TakenNameMsg     = "Sorry, the name \"%s\" is already taken. Please choose a different name\n"
+	LongNameMsg      = "Sorry, the written name is too long. Please choose a different name\n"
+	LatinNameMsg     = "Nickname can consist from latin letter only. Please, try again\n"
 	NonValidInputMsg = "Non-Valid input. Please, try again\n"
 	FullServerMsg    = "Sorry, the chat is full (10/10 connections)\n\n*Press enter to quit and Try to connect later*\n"
 )

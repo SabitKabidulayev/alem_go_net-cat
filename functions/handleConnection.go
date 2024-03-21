@@ -3,6 +3,7 @@ package functions
 import (
 	"bufio"
 	"errors"
+	"fmt"
 	"net"
 )
 
@@ -49,6 +50,16 @@ func ReadLine(conn net.Conn) (string, error) {
 }
 
 func (room *Server) ValidName(name string) error {
+	if !IsPrintable(name) {
+		return errors.New(LatinNameMsg)
+	}
+	if len(name) > 12 {
+		return errors.New(LongNameMsg)
+	}
+	if IsUsed(room, name) {
+		return errors.New(fmt.Sprintf(TakenNameMsg, name))
+	}
+
 	return nil
 }
 
@@ -68,6 +79,19 @@ func (room *Server) uploadHistory(conn net.Conn) {
 
 }
 
+func IsPrintable(msg string) bool {
+	printableFlag := false
+	for _, char := range msg {
+		if char != ' ' && char != '\t' && char != '\n' && char != '\r' {
+			printableFlag = true
+			if char < 32 || char > 126 {
+				return false
+			}
+		}
+	}
+	return printableFlag
+}
+
 func IsKeys(bytes []byte) bool {
 	for i := 0; i < len(bytes); i++ {
 		switch bytes[i] {
@@ -78,5 +102,17 @@ func IsKeys(bytes []byte) bool {
 		}
 	}
 
+	return false
+}
+
+func IsUsed(room *Server, str string) bool {
+	room.mutex.Lock()
+	defer room.mutex.Unlock()
+
+	for _, name := range room.clients {
+		if name == str {
+			return true
+		}
+	}
 	return false
 }

@@ -64,19 +64,29 @@ func (room *Server) ValidName(name string) error {
 }
 
 func sendErrorMessage(conn net.Conn, err error) {
-
+	conn.Write([]byte(err.Error()))
 }
 
 func (room *Server) AddClient(conn net.Conn, name string) {
-
+	room.mutex.Lock()
+	defer room.mutex.Unlock()
+	room.clients[conn] = name
 }
 
 func (room *Server) informNewConnection(conn net.Conn, ch chan<- Message) {
-
+	msgStruct := Message{false, conn, fmt.Sprintf(NewConnectionMsg, room.clients[conn])}
+	ch <- msgStruct
 }
 
 func (room *Server) uploadHistory(conn net.Conn) {
+	room.mutex.Lock()
+	defer room.mutex.Unlock()
 
+	if len(room.history) != 0 {
+		for _, msg := range room.history {
+			conn.Write([]byte(msg + "\n"))
+		}
+	}
 }
 
 func IsPrintable(msg string) bool {
